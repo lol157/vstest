@@ -31,8 +31,10 @@ class GitUpdater:
                 res = requests.get(file_url, timeout=60)
                 res.raise_for_status()
 
-                with open(download_path, 'wb') as wb:
+                with open(r'C:\Users\coolr\Desktop\Python\new_projects\vstest1\vs_build\vstest.exe', 'wb') as wb:
                     wb.write(res.content)
+
+                print('successfully downloaded')
                 break
             except Exception as ex:
                 print(ex)
