@@ -75,5 +75,6 @@ class GitUpdater:
 
 if __name__ == '__main__':
     with GitUpdater('vstest') as gu:
+
         gu.start_check_update_loop()
 
