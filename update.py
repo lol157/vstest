@@ -37,11 +37,14 @@ class GitUpdater:
                 time.sleep(300)
 
     @staticmethod
-    def shutdown_main_program():
+    def shutdown_main_program() -> int:
+        # Возвращает pid завершающегося процесса
         msg = json.dumps({'msg': 'shutdown'}).encode()
 
         with socket.create_connection(("127.0.0.1", 734)) as s:
             s.sendall(msg)
+
+        return json.loads(s.recv(1024).decode())['msg']
 
     def get_latest_commit(self):
         return self.cur_repo.get_branch(self.branch_name).commit
@@ -50,11 +53,16 @@ class GitUpdater:
         main_file_path = './vs_build/vstest.exe'
         while True:
             print('checking')
-            if self.get_latest_commit() != self.last_commit:
-                self.shutdown_main_program()
-                os.remove(main_file_path)
-                self.download_file(main_file_path)
-                os.startfile(main_file_path)
+            try:
+                if self.get_latest_commit() != self.last_commit:
+                    pid = self.shutdown_main_program()
+                    os.waitpid(pid)
+                    os.remove(main_file_path)
+                    self.download_file(main_file_path)
+                    os.startfile(main_file_path)
+            except Exception as ex:
+                print(ex)
+                time.sleep(1000)
             time.sleep(5)
 
 

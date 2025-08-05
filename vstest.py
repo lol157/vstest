@@ -1,3 +1,4 @@
+import os
 import time
 from github import Auth
 from github import Github
@@ -47,6 +48,7 @@ def listener():
         data = json.loads(conn.recv(1024).decode())
 
         if data.get('msg') == 'shutdown':
+            conn.sendall(json.dumps({'msg': os.getpid()}).encode())
             shutdown_flag = True
 
 
