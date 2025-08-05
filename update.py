@@ -1,5 +1,7 @@
 import os
 import time
+
+import psutil
 from github import Auth
 from github import Github
 from config import AUTH_TOKEN
@@ -29,7 +31,7 @@ class GitUpdater:
                 res = requests.get(file_url, timeout=60)
                 res.raise_for_status()
 
-                with open('test.exe', 'wb') as wb:
+                with open(download_path, 'wb') as wb:
                     wb.write(res.content)
                 break
             except Exception as ex:
@@ -44,7 +46,7 @@ class GitUpdater:
         with socket.create_connection(("127.0.0.1", 734)) as s:
             s.sendall(msg)
 
-        return json.loads(s.recv(1024).decode())['msg']
+            return json.loads(s.recv(1024).decode())['msg']
 
     def get_latest_commit(self):
         return self.cur_repo.get_branch(self.branch_name).commit
@@ -56,7 +58,8 @@ class GitUpdater:
             try:
                 if self.get_latest_commit() != self.last_commit:
                     pid = self.shutdown_main_program()
-                    os.waitpid(pid)
+                    while psutil.pid_exists(pid):
+                        time.sleep(3)
                     os.remove(main_file_path)
                     self.download_file(main_file_path)
                     os.startfile(main_file_path)
