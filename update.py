@@ -44,25 +44,21 @@ class GitUpdater:
             s.sendall(msg)
 
     def get_latest_commit(self):
-        return gu.cur_repo.get_branch(self.branch_name).commit
+        return self.cur_repo.get_branch(self.branch_name).commit
 
     def start_check_update_loop(self):
-        main_file_path = './vs_build/test1.exe'
+        main_file_path = './vs_build/vstest.exe'
         while True:
+            print('checking')
             if self.get_latest_commit() != self.last_commit:
                 self.shutdown_main_program()
                 os.remove(main_file_path)
                 self.download_file(main_file_path)
                 os.startfile(main_file_path)
-            time.sleep(300)
+            time.sleep(5)
 
 
 if __name__ == '__main__':
     with GitUpdater('vstest') as gu:
-        # main_file_path = './vs_build/test1.exe'
-        # gu.shutdown_main_program()
-        # os.remove(main_file_path)
-        # gu.download_file(main_file_path)
-        # os.startfile(main_file_path)
-        print()
+        gu.start_check_update_loop()
 

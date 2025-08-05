@@ -55,7 +55,7 @@ def test_job():
         time.sleep(3)
         if shutdown_flag:
             break
-        print('doing job')
+        print('doing job1')
 
 
 if __name__ == '__main__':
