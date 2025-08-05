@@ -58,13 +58,15 @@ class GitUpdater:
         while True:
             print('checking')
             try:
-                if self.get_latest_commit() != self.last_commit:
+                git_latest_commit = self.get_latest_commit()
+                if git_latest_commit != self.last_commit:
                     pid = self.shutdown_main_program()
                     while psutil.pid_exists(pid):
                         time.sleep(3)
                     os.remove(r'C:\Users\coolr\Desktop\Python\new_projects\vstest1\vs_build\vstest.exe')
                     self.download_file(git_file_path)
                     os.startfile(r'C:\Users\coolr\Desktop\Python\new_projects\vstest1\vs_build\vstest.exe')
+                    self.last_commit = git_latest_commit
             except Exception as ex:
                 print(ex)
                 time.sleep(1000)
