@@ -13,7 +13,7 @@ class GitUpdater:
         self.g = Github(auth=Auth.Token(AUTH_TOKEN))
         self.cur_repo = self.g.get_user().get_repo(repo_name)
         self.branch_name = branch_name
-        self.last_release = self.cur_repo.get_latest_release().tag_name
+        self.last_commit = self.get_latest_commit()
 
     def __enter__(self):
         return self
@@ -43,12 +43,26 @@ class GitUpdater:
         with socket.create_connection(("127.0.0.1", 734)) as s:
             s.sendall(msg)
 
+    def get_latest_commit(self):
+        return gu.cur_repo.get_branch(self.branch_name).commit
+
+    def start_check_update_loop(self):
+        main_file_path = './vs_build/test1.exe'
+        while True:
+            if self.get_latest_commit() != self.last_commit:
+                self.shutdown_main_program()
+                os.remove(main_file_path)
+                self.download_file(main_file_path)
+                os.startfile(main_file_path)
+            time.sleep(300)
+
 
 if __name__ == '__main__':
     with GitUpdater('vstest') as gu:
-        main_file_path = './vs_build/test1.exe'
-        gu.shutdown_main_program()
-        os.remove(main_file_path)
-        gu.download_file(main_file_path)
-        os.startfile(main_file_path)
+        # main_file_path = './vs_build/test1.exe'
+        # gu.shutdown_main_program()
+        # os.remove(main_file_path)
+        # gu.download_file(main_file_path)
+        # os.startfile(main_file_path)
+        print()
 
