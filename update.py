@@ -52,7 +52,7 @@ class GitUpdater:
         return self.cur_repo.get_branch(self.branch_name).commit
 
     def start_check_update_loop(self):
-        main_file_path = './vs_build/vstest.exe'
+        git_file_path = './vs_build/vstest.exe'
         while True:
             print('checking')
             try:
@@ -60,9 +60,9 @@ class GitUpdater:
                     pid = self.shutdown_main_program()
                     while psutil.pid_exists(pid):
                         time.sleep(3)
-                    os.remove(main_file_path)
-                    self.download_file(main_file_path)
-                    os.startfile(main_file_path)
+                    os.remove(r'C:\Users\coolr\Desktop\Python\new_projects\vstest1\vs_build\vstest.exe')
+                    self.download_file(git_file_path)
+                    os.startfile(r'C:\Users\coolr\Desktop\Python\new_projects\vstest1\vs_build\vstest.exe')
             except Exception as ex:
                 print(ex)
                 time.sleep(1000)
@@ -71,6 +71,5 @@ class GitUpdater:
 
 if __name__ == '__main__':
     with GitUpdater('vstest') as gu:
-
         gu.start_check_update_loop()
 
